@@ -33,14 +33,34 @@ st.markdown("""
     .mejora-badge { background-color: #C6EFCE; color: #006100; padding: 0.2rem 0.5rem; border-radius: 0.3rem; font-weight: bold; }
     .retroceso-badge { background-color: #FFC7CE; color: #9C0006; padding: 0.2rem 0.5rem; border-radius: 0.3rem; font-weight: bold; }
     .equivalente-badge { background-color: #D9E1F2; color: #0066CC; padding: 0.2rem 0.5rem; border-radius: 0.3rem; font-weight: bold; }
+    .logo-corner{position:fixed;top:12px;left:60px;z-index:9999;pointer-events:none}
+    .logo-corner img{pointer-events:auto;max-width:100px;max-height:45px;border-radius:4px;box-shadow:0 2px 6px rgba(0,0,0,0.15);object-fit:contain}
+    .main .block-container{padding-top:2.5rem!important}
 </style>
 """, unsafe_allow_html=True)
 
 # ============================================
 # FUNCIÓN PARA LOGO EN HEADER
 # ============================================
+def _logo_integrado():
+    """Logo integrado en header de Streamlit - VERSIÓN FINAL"""
+    try:
+        with open("logoCL1.jpeg", "rb") as f:
+            import base64
+            b64 = base64.b64encode(f.read()).decode()
 
+            # Crear header con logo y título en columnas
+            col_logo, col_titulo = st.columns([0.1, 0.9])
 
+            with col_logo:
+                st.markdown(f'''
+                    <div style="text-align: center; margin-top: 10px;">
+                        <img src="data:image/jpeg;base64,{b64}" style="max-width: 100px; max-height: 75px; border-radius: 4px;">
+                    </div>
+                ''', unsafe_allow_html=True)
+
+    except Exception as e:
+        print(f"❌ Error logo: {e}")
 # ============================================
 # FUNCIONES UTILITARIAS - SIN CAMBIOS EN IA
 # ============================================
@@ -576,44 +596,16 @@ def procesar_dos_excels(file_antiguo, file_nuevo, col_antiguo, col_nuevo,
 
     return wb_antiguo, resultados_totales, "Procesamiento completado"
 
-def agregar_logo_header():
-    """
-    Inserta el logo en la esquina superior derecha usando HTML/CSS
-    El logo debe estar en la misma carpeta del proyecto
-    """
-    st.markdown("""
-    <style>
-        .logo-container {
-            position: fixed;
-            top: 15px;
-            right: 20px;
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-        }
-        .logo-img {
-            max-height: 50px;
-            max-width: 150px;
-            object-fit: contain;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        /* Ajustar padding del header para que no tape contenido */
-        .main .block-container {
-            padding-top: 2rem;
-        }
-    </style>
-    <div class="logo-container">
-        <img src="./logoCL1.jpeg" alt="Logo" class="logo-img">
-    </div>
-    """, unsafe_allow_html=True)
 
 # ============================================
 # INTERFAZ PRINCIPAL
 # ============================================
 
 def main():
-    st.markdown('<div class="main-header">🤖 Comparador Inteligente de Pólizas Antiguas y Nuevas</div>', unsafe_allow_html=True)
+    #
+    _logo_integrado()
+
+    st.markdown('<div class="main-header">Comparador Inteligente de Pólizas Antiguas y Nuevas</div>', unsafe_allow_html=True)
     st.markdown('<div class="sub-header">Compara póliza ANTIGUA vs NUEVA identificando mejoras, retrocesos y diferencias</div>', unsafe_allow_html=True)
 
     # Verificar API Key
@@ -622,7 +614,7 @@ def main():
         st.markdown('<div class="error-box"><strong>❌ Error:</strong> Crear archivo <code>.env</code> con GEMINI_API_KEY=tu_key</div>', unsafe_allow_html=True)
         st.stop()
 
-    st.markdown('<div class="success-box"><strong>✅ API Key configurada</strong> | Gemini AI activa para análisis</div>', unsafe_allow_html=True)
+    #st.markdown('<div class="success-box"><strong>✅ API Key configurada</strong> | Gemini AI activa para análisis</div>', unsafe_allow_html=True)
 
     # Sidebar - Configuración
     st.sidebar.header("⚙️ Configuración de Comparación")
@@ -817,5 +809,4 @@ def main():
         st.info("👆 Sube ambos archivos Excel para comenzar la comparación")
 
 if __name__ == "__main__":
-    agregar_logo_header()
     main()
